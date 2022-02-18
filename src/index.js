@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import {queries} from "@testing-library/react";
 
 // Function Component
 function Square(props) {
@@ -23,6 +24,10 @@ class Board extends React.Component {
     handleClick(i) {
         // Create a copy of the squares array instead of modifying existing array
         const squares = this.state.squares.slice();
+
+        // End early if someone won the game
+        if (calculateWinner(squares) || squares[i]) { return; }
+
         squares[i] = this.state.xIsNext ? '❌' : '⭕️';
         this.setState({
             squares: squares,
@@ -40,7 +45,14 @@ class Board extends React.Component {
     }
 
     render() {
-        const status = 'Next player: ' + (this.state.xIsNext ? '❌' : '⭕️');
+        const winner = calculateWinner(this.state.squares);
+        let status;
+
+        if (winner) {
+            status = winner + ' Won!';
+        } else {
+            status = 'Next player: ' + (this.state.xIsNext ? '❌' : '⭕️');
+        }
 
         return (
             <div>
